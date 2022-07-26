@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "8964488470465030219"
+      "templateHash": "9525532375285756247"
     }
   },
   "parameters": {
@@ -31,7 +31,17 @@
   },
   "resources": [
     {
-      "type": "Micosoft.Web/sites",
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('apim-{0}-{1}', parameters('name'), parameters('loc'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "capacity": 0,
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('funcappname')]",
       "location": "[parameters('location')]",
@@ -41,14 +51,26 @@
         "siteConfig": {
           "appSettings": [
             {
-              "name": "AzureWebJobs"
+              "name": "AzureWebJobsStorage",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts', format('stacc-{0}-{1}', parameters('name'), parameters('loc')))]"
             }
           ]
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]"
+        "[resourceId('Microsoft.Web/sites', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', format('stacc-{0}-{1}', parameters('name'), parameters('loc')))]"
       ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-09-01",
+      "name": "[format('stacc-{0}-{1}', parameters('name'), parameters('loc'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_ZRS"
+      },
+      "kind": "BlobStorage"
     },
     {
       "type": "Microsoft.Web/sites",
@@ -68,12 +90,29 @@
       }
     },
     {
-      "type": "Microsoft.Web/sites",
-      "apiVersion": "2022-03-01",
-      "name": "[format('st{0}{1}', parameters('name'), parameters('loc'))]",
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[format('appin-{0}-{1}', parameters('name'), parameters('loc'))]",
       "location": "[parameters('location')]",
-      "sku": {
-        "name": "Standard"
+      "kind": "phone",
+      "properties": {
+        "Application_Type": "other",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', format('wrkanl-{0}-{1}', parameters('name'), parameters('loc')))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', format('wrkanl-{0}-{1}', parameters('name'), parameters('loc')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('wrkanl-{0}-{1}', parameters('name'), parameters('loc'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "retentionInDays": 30,
+        "sku": {
+          "name": "CapacityReservation"
+        }
       }
     }
   ],
