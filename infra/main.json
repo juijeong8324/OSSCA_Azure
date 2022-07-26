@@ -1,0 +1,86 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.8.9.13224",
+      "templateHash": "8964488470465030219"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "env": {
+      "type": "string",
+      "defaultValue": "dev"
+    },
+    "loc": {
+      "type": "string",
+      "defaultValue": "krc"
+    }
+  },
+  "variables": {
+    "rg": "[format('rg-{0}-{1}', parameters('name'), parameters('env'))]",
+    "funcappname": "[format('funcapp-{0}-{1}', parameters('name'), parameters('loc'))]"
+  },
+  "resources": [
+    {
+      "type": "Micosoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('funcappname')]",
+      "location": "[parameters('location')]",
+      "kind": "functionapp",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/sites', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "AzureWebJobs"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[format('cspaln-{0}-{1}', parameters('name'), parameters('loc'))]",
+      "location": "[parameters('location')]",
+      "kind": "functionapp",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y",
+        "capacity": 0
+      },
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[format('st{0}{1}', parameters('name'), parameters('loc'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      }
+    }
+  ],
+  "outputs": {
+    "rn": {
+      "type": "string",
+      "value": "[variables('rg')]"
+    }
+  }
+}
