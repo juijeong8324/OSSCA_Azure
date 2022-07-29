@@ -7,7 +7,7 @@
 |주차|내용|링크|
 |---|---|---|
 |1주차|Azure Function|[벨로그](https://velog.io/@juijeong8324/OSSCA-1%EC%A3%BC%EC%B0%A8)|
-|2주차|Bicep|[벨로그](https://velog.io/@juijeong8324/OSSCA-2주차-Azure-Bicep), [숙제](https://github.com/juijeong8324/OSSCA_Azure/blob/main/infra/main.bicep)|
+|2주차|Bicep|[벨로그](https://velog.io/@juijeong8324/OSSCA-2주차-Azure-Bicep)|
 |3주차|Github Action||
 
 
@@ -15,6 +15,6 @@
 |주차|내용|링크|  
 |---|---|---|     
 |1주차|Fluent API와 DSL|[벨로그](https://velog.io/@juijeong8324/OSSCA-1%EC%A3%BC%EC%B0%A8-%EA%B3%BC%EC%A0%9C)|        
-|2주차|Azure Bicep 만들기|[깃허브](https://github.com/juijeong8324/OSSCA_Azure/blob/main/infra/main.bicep), [벨로그](https://velog.io/@juijeong8324/OSSCA-2%EC%A3%BC%EC%B0%A8-%EA%B3%BC%EC%A0%9C)|         
+|2주차|Azure Bicep 만들기|[깃허브](https://github.com/juijeong8324/OSSCA_Azure/tree/main/infra), [벨로그](https://velog.io/@juijeong8324/OSSCA-2%EC%A3%BC%EC%B0%A8-%EA%B3%BC%EC%A0%9C)|         
 |3주차||  |       
 
