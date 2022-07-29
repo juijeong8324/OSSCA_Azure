@@ -7,3 +7,7 @@
 |---|---|---|
 |1주차|Azure Function|[벨로그](https://velog.io/@juijeong8324/OSSCA-1%EC%A3%BC%EC%B0%A8)|
 |2주차|Bicep|[벨로그](https://velog.io/@juijeong8324/OSSCA-2주차-Azure-Bicep), [숙제](https://github.com/juijeong8324/OSSCA_Azure/blob/main/infra/main.bicep)|
+'
+
+
+
