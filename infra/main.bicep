@@ -1,20 +1,26 @@
-param name string // 필수적으로 값을 넘겨줘야 하는 애 
-param location string = resourceGroup().location
-param env string = 'dev' // env는 기본값이 dev임 
+param name string // 외부에서 필수적으로 값을 넘겨줘야 하는 애 
+param location string = resourceGroup().location // 외부에서 값을 입력받아도 되고 입력이 없으면 지금 정의한 default를 따름! 
+param env string = 'dev' // default 값(dev) 정의!! 
 param loc string = 'krc'
+param pubName string = 'owner'
+param pubEmail string
 
 var rg = 'rg-${name}-${env}' // 파라미터를 받아서 이렇게 리소스 이름으로 설정함
-
 var funcappname = 'funcapp-${name}-${loc}'
 
 /*Api Management*/
-resource apim 'Microsoft.ApiManagement/service@2021-12-01-preview' = { // 어플리케이션을 여러개 쓰고 싶으면 이름 반드시 다르게!! 
-  name : 'apim-${name}-${loc}'
+resource apiman 'Microsoft.ApiManagement/service@2021-12-01-preview' = { // 어플리케이션을 여러개 쓰고 싶으면 이름 반드시 다르게!! 
+  name : 'apiman-${name}-${loc}'
   location : location
   sku : { //sku는 애플리케이션의 종류가 여러 개 이기 때문에 더 자세하게 정의한 것!
-    capacity: 1
+    capacity: 2
     name : 'Standard' 
   }
+  properties: {
+    publisherEmail : pubEmail
+    publisherName : pubName
+  }
+  
 }
 
 /*Azure function*/
@@ -23,7 +29,7 @@ resource fncapp 'Microsoft.Web/sites@2022-03-01' = {
   location: location
   kind: 'functionapp'
   properties: {
-    serverFarmId: csplan.id // 종속성!! 
+    serverFarmId: appserplan.id // 종속성!! 
     siteConfig:{
       appSettings: [
         {
@@ -37,7 +43,7 @@ resource fncapp 'Microsoft.Web/sites@2022-03-01' = {
 
 /*Azure storage account*/
 resource stacc 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name : 'stacc${name}${loc}'
+  name : 'sac${name}${loc}'
   location : location
   sku : {
     name :'Standard_LRS'
@@ -49,15 +55,12 @@ resource stacc 'Microsoft.Storage/storageAccounts@2021-09-01' = {
 }
 
 /*Azure App service plan*/
-resource csplan 'Microsoft.Web/sites@2022-03-01'={ // 어플리케이션을 여러개 쓰고 싶으면 이름 반드시 다르게!! 
+resource appserplan 'Microsoft.Web/serverfarms@2022-03-01' = { // 어플리케이션을 여러개 쓰고 싶으면 이름 반드시 다르게!! 
   name: 'cspaln-${name}-${loc}'
   location:location
   kind: 'functionapp'
   sku:{ 
     name: 'Y1'
-    tier: 'Dynamic'
-    size: 'Y1'
-    family: 'Y'
     capacity: 1
 
   }
@@ -86,6 +89,7 @@ resource wrkanl 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = 
     retentionInDays: 30
     sku : {
       name : 'CapacityReservation'
+      capacityReservationLevel: 100 // 100의 배수여야 한다...
     }
   }
 }

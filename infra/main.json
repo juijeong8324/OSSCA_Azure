@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "9525532375285756247"
+      "templateHash": "9256868229048856681"
     }
   },
   "parameters": {
@@ -23,6 +23,13 @@
     "loc": {
       "type": "string",
       "defaultValue": "krc"
+    },
+    "pubName": {
+      "type": "string",
+      "defaultValue": "owner"
+    },
+    "pubEmail": {
+      "type": "string"
     }
   },
   "variables": {
@@ -33,11 +40,15 @@
     {
       "type": "Microsoft.ApiManagement/service",
       "apiVersion": "2021-12-01-preview",
-      "name": "[format('apim-{0}-{1}', parameters('name'), parameters('loc'))]",
+      "name": "[format('apiman-{0}-{1}', parameters('name'), parameters('loc'))]",
       "location": "[parameters('location')]",
       "sku": {
-        "capacity": 0,
+        "capacity": 2,
         "name": "Standard"
+      },
+      "properties": {
+        "publisherEmail": "[parameters('pubEmail')]",
+        "publisherName": "[parameters('pubName')]"
       }
     },
     {
@@ -47,43 +58,43 @@
       "location": "[parameters('location')]",
       "kind": "functionapp",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/sites', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]",
         "siteConfig": {
           "appSettings": [
             {
               "name": "AzureWebJobsStorage",
-              "value": "[resourceId('Microsoft.Storage/storageAccounts', format('stacc-{0}-{1}', parameters('name'), parameters('loc')))]"
+              "value": "[resourceId('Microsoft.Storage/storageAccounts', format('sac{0}{1}', parameters('name'), parameters('loc')))]"
             }
           ]
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', format('stacc-{0}-{1}', parameters('name'), parameters('loc')))]"
+        "[resourceId('Microsoft.Web/serverfarms', format('cspaln-{0}-{1}', parameters('name'), parameters('loc')))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', format('sac{0}{1}', parameters('name'), parameters('loc')))]"
       ]
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2021-09-01",
-      "name": "[format('stacc-{0}-{1}', parameters('name'), parameters('loc'))]",
+      "name": "[format('sac{0}{1}', parameters('name'), parameters('loc'))]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "Standard_ZRS"
+        "name": "Standard_LRS"
       },
-      "kind": "BlobStorage"
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Cool"
+      }
     },
     {
-      "type": "Microsoft.Web/sites",
+      "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
       "name": "[format('cspaln-{0}-{1}', parameters('name'), parameters('loc'))]",
       "location": "[parameters('location')]",
       "kind": "functionapp",
       "sku": {
         "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
+        "capacity": 1
       },
       "properties": {
         "reserved": true
@@ -111,7 +122,8 @@
       "properties": {
         "retentionInDays": 30,
         "sku": {
-          "name": "CapacityReservation"
+          "name": "CapacityReservation",
+          "capacityReservationLevel": 100
         }
       }
     }
