@@ -16,7 +16,6 @@
 |---|---|---|     
 |1주차|Fluent API와 DSL|[벨로그](https://velog.io/@juijeong8324/OSSCA-1%EC%A3%BC%EC%B0%A8-%EA%B3%BC%EC%A0%9C)|        
 |2주차|Azure Bicep 만들기|[깃허브](https://github.com/juijeong8324/OSSCA_Azure/tree/main/infra), [벨로그](https://velog.io/@juijeong8324/OSSCA-2%EC%A3%BC%EC%B0%A8-%EA%B3%BC%EC%A0%9C)|         
-|3주차||  |       
-
+|3주차|Github Action|  |  
 
 
