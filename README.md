@@ -1,6 +1,6 @@
 # OSSCA_Azure
-
-2022 OSCCA에서 [NHN toast Connector](https://github.com/devrel-kr/nhn-toast-notification-service-custom-connector) Project를 진행하면서 배운 코드와 과제를 올립니다! 
+2022 OSCCA에서 [NHN toast Connector](https://github.com/devrel-kr/nhn-toast-notification-service-custom-connector) Project를 진행하면서 배운 코드와 과제를 올립니다!
+오픈소스 컨트리뷰션 아카데미에서의 모든 기록은 [OSSCA](https://velog.io/@juijeong8324/series/OSSCA)를 참고하세요!
 
 ## 배운 내용 정리
 
